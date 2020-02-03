@@ -22,7 +22,7 @@ include('controler.php');
                     <div class="top">
                         <h1>Connectez-vous</h1>
                         <form class="form" action="controler.php" method="post">
-                            <input type="email" class="form-control input" name="connect_mail" placeholder="Votre addresse mail" required autofocus>
+                            <input type="text" class="form-control input" name="connect_mail" placeholder="Votre addresse mail ou votre pseudo" required autofocus>
                             <input type="password" class="form-control input" name="connect_password" placeholder="Votre mot de passe" required>
                             <input type="submit" class="btn btn-primary input" name="submit_connection" value="Se connecter">
                         </form>
@@ -37,6 +37,7 @@ include('controler.php');
                         <form class="form" action="controler.php" method="post">
                             <input type="name" class="form-control input" name="new_first_name" placeholder="Votre prénom" required>
                             <input type="name" class="form-control input" name="new_second_name" placeholder="Votre nom de famille" required>
+                            <input type="text" class="form-control input" name="username" placeholder="Votre pseudo" required>
                             <input type="email" class="form-control input" name="new_mail" placeholder="Votre addresse mail" required>
                             <input type="password" class="form-control input" name="new_password" placeholder="Votre mot de passe" required>
                             <input type="password" class="form-control input" name="new_confirm_password" placeholder="Confirmation de votre mot de passe" required>

@@ -15,13 +15,14 @@ $sql = new SQL();
     // On échape le code HTML qui pourrait être inclut dans les input pour éviter les failles XSS
     $new_first_name = htmlspecialchars($_POST['new_first_name']);
     $new_second_name = htmlspecialchars($_POST['new_second_name']);
+    $username = htmlspecialchars($_POST['username']);
     $new_mail = htmlspecialchars($_POST['new_mail']);
     // On appelle la fonction hashPassword pour hasher nos mots de passe
     $new_password = htmlspecialchars(hashPassword($_POST['new_password']));
     $new_confirm_password = htmlspecialchars(hashPassword($_POST['new_confirm_password']));
 
     if (isset($_POST['submit_new_account'])) {
-        if (!empty($new_first_name) && !empty($new_second_name) && !empty($new_mail) && !empty($new_password) && !empty($new_confirm_password)) {
+        if (!empty($new_first_name) && !empty($new_second_name) && !empty($username) && !empty($new_mail) && !empty($new_password) && !empty($new_confirm_password)) {
             // Si l'adresse mail se termine par viacesi.fr ou cesi.fr
             if (preg_match('/@viacesi.fr$|@cesi.fr$/', $new_mail)) {
                 // Si les deux mots de passe correspondent
@@ -35,7 +36,7 @@ $sql = new SQL();
                     }
 
                     // On fait référence à notre class SQL grâce à la variable $sql déclarée plus haut, puis on appelle notre en fonction en passant en paramètre les informations que l'utilisateur a renseigné
-                    $sql->addUser($admin, $new_first_name, $new_second_name, $new_mail, $new_confirm_password);
+                    $sql->addUser($admin, $new_first_name, $new_second_name, $username, $new_mail, $new_confirm_password);
                     $_SESSION['connected'] = true;
                     $_SESSION['first_name'] = $new_first_name;
                     header('Location: index.php');
@@ -60,14 +61,17 @@ $sql = new SQL();
 
             if (count($data) > 0) {
                 foreach ($data as $user) {
+                    $user_id = $user['id'];
                     $user_mail = $user['mail'];
+                    $user_username = $user['username'];
                     $user_password = $user['password'];
                     $user_name = $user['first_name'];
                 }
 
-                if ($mail == $user_mail && $password == $user_password) {
+                if ($mail == $user_mail || $mail == $user_username && $password == $user_password) {
                     $_SESSION['connected'] = true;
                     $_SESSION['first_name'] = $user_name;
+                    $_SESSION['id'] = $user_id;
                     header('Location: account.php');
                 } else {
                     echo 'Votre adresse mail ou votre mot de passe ne correspond pas';
@@ -76,12 +80,82 @@ $sql = new SQL();
                 echo 'Votre adresse mail ou votre mot de passe ne correspond pas';
             }
         }
+    } 
+//
+// ADD TOPIC
+    $topic_title = htmlspecialchars($_POST['topic_title']);
+    $topic_message = htmlspecialchars($_POST['topic_message']);
+
+    if (isset($_POST['topic_submit'])) {
+        if (!empty($topic_title) && !empty($topic_message)) {
+            // Si une image a été entrée
+            if ($_FILES['topic_image']['size'] != 0) {
+                if ($_FILES['topic_image']['size'] != 0) {
+                    $file_extension = pathinfo($_FILES['topic_image']['name']);
+                    $extensions = array('jpg', 'jpeg', 'png', 'gif');
+                    $move = __DIR__.'/assets/img/' . basename($_FILES['topic_image']['name']);
+                    $img_name = htmlspecialchars($_FILES['topic_image']['name']);
+
+                    if (in_array($file_extension['extension'], $extensions)) {
+                        if (move_uploaded_file($_FILES['topic_image']['tmp_name'], $move)) {
+                            $move = 'assets/img/'. basename($_FILES['topic_image']['name']);
+                            $sql->addTopic($_SESSION['id'], $topic_title, $move, $topic_message);
+                            header('Location: topics.php');
+                        } else {
+                            echo 'Une erreur s\'est produite lors de l\'envoi du fichier' . $move;
+                        }
+                        
+                    } else {
+                        echo 'L\'extension du fichier n\'est pas autorisée';
+                    }
+                } else {
+                    echo 'Une erreur est survenue au chargement de l\'image';
+                }
+            } else {
+                $move = '';
+                $sql->addTopic($_SESSION['id'], $topic_title, $move, $topic_message);
+                header('Location: topics.php');
+            }
+        } else {
+            echo 'Le titre et le message du topic doivent êtres renseignés';
+        }
+    }
+//
+// GET ALL TOPICS
+    $data_topics = $sql->getTopics();
+
+    foreach($data_topics as $topic) {
+        
+        $data_user = $sql->getUserById($topic['id_user']);
+
+        foreach($data_user as $user_by_id) {
+            $user_by_id_username = $user_by_id['username'];
+        }
+
+        setlocale (LC_TIME, "fr_FR");
+        //$actual_date = date("Y-m-d");
+        $date_published = date_create($topic['date_published']);
+        $date_published = date_format($date_published, 'd/m/Y à H:i');
+        //$date_published = strftime("%A %d %B %Y à %H:%M");
+
+        $topics .= '<div class="card text-center topic-container">
+                        <div class="card-header topic-top">
+                            <span>Par '. $user_by_id_username .'</span>
+                        </div>
+                        <div class="card-body">
+                            <span class="title">'. $topic['title'] .'</span>
+                            <a href="javascript:;" class="btn btn-primary">Voir ce topic</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <span>Le '. $date_published .'</span>
+                        </div>
+                    </div>';
     }
 //
 // DÉCONNEXION
     if (isset($_POST['submit_disconnection'])) {
         session_destroy();
-        $_SESSION[] = array();
+        $_SESSION = array();
         header('Location: account.php');
     }
 //

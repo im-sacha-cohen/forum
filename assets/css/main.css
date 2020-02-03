@@ -68,3 +68,25 @@ header ul a li {
 .container .bottom {
     margin-bottom: 60px;
 }
+
+form.form-topic textarea {
+    resize: none;
+    height: 300px;
+}
+
+.container.topics {
+    min-height: 530px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.container.topics .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container.topics .card-body .title {
+    font-weight: 600;
+}
