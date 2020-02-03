@@ -4,7 +4,7 @@ class SQL {
     private function bdd() {
         try {
             //return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
-            return new PDO('mysql:host=localhost;dbname=forum;port=8888;charset=utf8', 'root', 'root');
+            return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8', 'root', 'root');
         } catch (Exception $e) {
             echo 'Caught exception: ' . $e->getMessage();
         }
