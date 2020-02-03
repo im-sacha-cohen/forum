@@ -192,7 +192,7 @@ $sql = new SQL();
 //
 // AJOUTER UN COMMENTAIRE
     $id_topic = htmlspecialchars($_POST['id_topic']);
-    $comment = htmlspecialchars($_POST['submit_comment']);
+    $comment = htmlspecialchars($_POST['comment']);
 
     if (isset($_POST['submit_comment'])) {
         if (!empty($comment) && !empty($id_topic) && !empty($_SESSION['id'])) {
