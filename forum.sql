@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Feb 03, 2020 at 10:39 AM
+-- Generation Time: Feb 03, 2020 at 10:42 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.8
 
@@ -34,14 +34,6 @@ CREATE TABLE `topic` (
   `message` text NOT NULL,
   `date_published` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `topic`
---
-
-INSERT INTO `topic` (`id`, `id_user`, `title`, `src`, `message`, `date_published`) VALUES
-(15, 5, 'How to write database connection ?', 'assets/img/Capture d’écran 2020-01-13 à 20.36.00.png', 'a', '2020-02-03 10:54:43'),
-(16, 5, 'Why is my variable undefined ?', '', 'a', '2020-02-03 16:54:57');
 
 -- --------------------------------------------------------
 
@@ -85,7 +77,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `topic`
 --
 ALTER TABLE `topic`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`
