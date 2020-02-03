@@ -3,8 +3,8 @@
 class SQL {
     private function bdd() {
         try {
-            return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
-            //return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8', 'root', 'root');
+            //return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
+            return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8', 'root', 'root');
         } catch (Exception $e) {
             echo 'Caught exception: ' . $e->getMessage();
         }
@@ -82,7 +82,7 @@ class SQL {
 
     public function getComments($id_topic) {
         $bdd = $this->bdd();
-        
+
         $select = $bdd->query('SELECT * FROM comments WHERE id_topic = '. $id_topic);
         $fetch = $select->fetchAll();
         return $fetch;
