@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Feb 03, 2020 at 10:42 AM
+-- Generation Time: Feb 03, 2020 at 02:58 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.8
 
@@ -19,6 +19,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `forum`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` int(11) NOT NULL,
+  `id_topic` int(11) NOT NULL,
+  `posted_by` int(11) NOT NULL,
+  `posted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -57,6 +71,14 @@ CREATE TABLE `user` (
 --
 
 --
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_topic` (`id_topic`),
+  ADD KEY `posted_by` (`posted_by`);
+
+--
 -- Indexes for table `topic`
 --
 ALTER TABLE `topic`
@@ -74,6 +96,12 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `topic`
 --
 ALTER TABLE `topic`
@@ -88,6 +116,13 @@ ALTER TABLE `user`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`id_topic`) REFERENCES `topic` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`posted_by`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `topic`

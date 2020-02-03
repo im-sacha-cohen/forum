@@ -34,6 +34,7 @@ header ul a li {
 .container {
     text-align: center;
     margin-top: 60px;
+    margin-bottom: 60px;
 }
 
 .separator {
@@ -69,13 +70,13 @@ header ul a li {
     margin-bottom: 60px;
 }
 
-form.form-topic textarea {
+textarea {
     resize: none;
-    height: 300px;
+    height: 300px!important;
 }
 
 .container.topics {
-    min-height: 530px;
+    /*min-height: 530px;*/
     height: auto;
     display: flex;
     flex-direction: column;
@@ -87,6 +88,31 @@ form.form-topic textarea {
     flex-direction: column;
 }
 
-.container.topics .card-body .title {
+.topic-detail .card {
+    text-align: left;
+}
+
+.title-topic {
     font-weight: 600;
+}
+
+.topic-infos-container {
+    display: flex;
+}
+
+.topic-infos-container h2 {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.topic-detail .card .card-body p {
+    font-weight: 300;
+}
+
+.topic-detail .card .card-body img {
+    max-width: 100%;
+}
+
+.topic-detail .hidden {
+    display: none;
 }

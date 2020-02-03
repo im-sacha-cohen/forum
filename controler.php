@@ -82,7 +82,7 @@ $sql = new SQL();
         }
     } 
 //
-// ADD TOPIC
+// AJOUTER UN TOPIC
     $topic_title = htmlspecialchars($_POST['topic_title']);
     $topic_message = htmlspecialchars($_POST['topic_message']);
 
@@ -121,7 +121,7 @@ $sql = new SQL();
         }
     }
 //
-// GET ALL TOPICS
+// RÉCUPÉRER TOUS LES TOPICS
     $data_topics = $sql->getTopics();
 
     foreach($data_topics as $topic) {
@@ -143,13 +143,90 @@ $sql = new SQL();
                             <span>Par '. $user_by_id_username .'</span>
                         </div>
                         <div class="card-body">
-                            <span class="title">'. $topic['title'] .'</span>
-                            <a href="javascript:;" class="btn btn-primary">Voir ce topic</a>
+                            <span class="title-topic">'. $topic['title'] .'</span>
+                            <a href="topic.php?topic='. $topic['id'] .'" class="btn btn-primary">Voir ce topic</a>
                         </div>
                         <div class="card-footer text-muted">
                             <span>Le '. $date_published .'</span>
                         </div>
                     </div>';
+    }
+//
+// RÉCUPÉRER UN TOPIC PAR L'ID
+    if (isset($_GET['topic'])) {
+        if (is_numeric($_GET['topic']) && $_GET['topic'] >= 0 && $_GET['topic'] <= 9999) {
+            $data_topic_by_id = $sql->getTopicById($_GET['topic']);
+
+            $data_user = $sql->getUserById($topic['id_user']);
+
+            foreach($data_user as $user_by_id) {
+                $user_by_id_username = $user_by_id['username'];
+            }
+
+            foreach($data_topic_by_id as $topic_by_id) {
+
+                if ($topic_by_id['src'] != null) {
+                   $img = '<img src="'. $topic_by_id['src'] .'" alt="image">';
+                } else {
+                    $img = '';
+                }
+
+                $topic_detail .= '<div class="card border-black mb-3">
+                                    <div class="card-header">
+                                        <h1 class="title-topic">'. $topic_by_id['title'] .'</h1>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="topic-infos-container">
+                                            <h2 class="topic-infos">Par '. $user_by_id_username .', </h2>
+                                            <h2 class="topic-infos">le '. $topic_by_id['date_published'] .'</h2>
+                                        </div>
+                                        <p>'. $topic_by_id['message'] .'</p>
+                                        '. $img .'
+                                    </div>
+                                </div>';
+            }
+        } else {
+            echo 'Topic not valid';
+        }
+    }
+//
+// AJOUTER UN COMMENTAIRE
+    $id_topic = htmlspecialchars($_POST['id_topic']);
+    $comment = htmlspecialchars($_POST['submit_comment']);
+
+    if (isset($_POST['submit_comment'])) {
+        if (!empty($comment) && !empty($id_topic) && !empty($_SESSION['id'])) {
+            $sql->addComment($id_topic, $_SESSION['id'], $comment);
+            header('Location: topic.php?topic='. $id_topic);
+        } else {
+            echo 'Vous devez remplir la zone de commentaire !';
+        }
+    }
+//
+// RÉCUPÉRER TOUS LES COMMENTAIRES CORRESPONDANT AU TOPI
+    if (isset($_GET['topic'])) {
+        $comments = $sql->getComments($_GET['topic']);
+
+        foreach($comments as $data_comment) {
+            $user = $sql->getUserById($data_comment['posted_by']);
+
+            foreach($user as $data_user) {
+                $username = $data_user['username'];
+            }
+
+            setlocale (LC_TIME, "fr_FR");
+            $date_published = date_create($data_comment['posted']);
+            $date_published = date_format($date_published, 'd/m/Y à H:i');
+
+            $commentary .= '<div class="card border-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">'. $username .', le '. $date_published .'</h5>
+                                <p class="card-text">
+                                    '. $data_comment['comment'] .'
+                                </p>
+                            </div>
+                        </div>';
+        }
     }
 //
 // DÉCONNEXION

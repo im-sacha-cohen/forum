@@ -3,8 +3,8 @@
 class SQL {
     private function bdd() {
         try {
-            //return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
-            return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8', 'root', 'root');
+            return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
+            //return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8', 'root', 'root');
         } catch (Exception $e) {
             echo 'Caught exception: ' . $e->getMessage();
         }
@@ -57,6 +57,33 @@ class SQL {
         $bdd = $this->bdd();
         
         $select = $bdd->query('SELECT * FROM topic ORDER BY date_published DESC');
+        $fetch = $select->fetchAll();
+        return $fetch;
+    }
+
+    public function getTopicById($id) {
+        $bdd = $this->bdd();
+        
+        $select = $bdd->query('SELECT * FROM topic WHERE id = '. $id);
+        $fetch = $select->fetchAll();
+        return $fetch;
+    }
+
+    public function addComment($id_topic, $posted_by, $comment) {
+        $bdd = $this->bdd();
+
+        $insert = $bdd->prepare('INSERT INTO comments (id_topic, posted_by, comment) VALUES (:id_topic, :posted_by, :comment)');
+        $insert->execute(array(
+            ':id_topic' => $id_topic,
+            ':posted_by' => $posted_by,
+            ':comment' => $comment
+        ));
+    }
+
+    public function getComments($id_topic) {
+        $bdd = $this->bdd();
+        
+        $select = $bdd->query('SELECT * FROM comments WHERE id_topic = '. $id_topic);
         $fetch = $select->fetchAll();
         return $fetch;
     }
