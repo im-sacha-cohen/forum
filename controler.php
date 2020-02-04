@@ -3,6 +3,13 @@
 session_start();
 include('model.php');
 
+use \PHPMailer\PHPMailer\PHPMailer;
+use \PHPMailer\PHPMailer\Exception;
+
+require 'src/Exception.php';
+require 'src/PHPMailer.php';
+require 'src/SMTP.php';
+
 // Par défaut l'utilisateur n'est pas connecté
 if (!$_SESSION['connected']) {
     $_SESSION['connected'] = false;
@@ -197,7 +204,107 @@ $sql = new SQL();
     if (isset($_POST['submit_comment'])) {
         if (!empty($comment) && !empty($id_topic) && !empty($_SESSION['id'])) {
             $sql->addComment($id_topic, $_SESSION['id'], $comment);
-            header('Location: topic.php?topic='. $id_topic);
+
+            $topics = $sql->getTopicById($id_topic);
+            foreach($topics as $topic) {
+                $users = $sql->getUserById($topic['id_user']);
+
+                foreach($users as $user) {
+                    $client_message = "<html>
+                                <head>
+                                <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
+                                    <style>
+                                        body
+                                        {
+                                            font-family: 'Montserrat',
+                                            font-size: 13px;
+                                            font-weight: 100;
+                                        }
+        
+                                        .title { display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 10px; }
+        
+                                        h1 {
+                                            font-weight: 500;
+                                            font-size: 20px;
+                                            text-align: center;
+                                            margin: 0;
+                                        }
+
+                                        h3 { font-weight: 500; margin-top: 50px; }
+        
+                                        .center { 
+                                            display: flex;
+                                            flex-direction: column;
+                                            padding: 10px;
+                                            width: 100%;
+                                            height: 40px;
+                                            align-items: center;
+                                            margin: 10px 0; 
+                                            font-weight: 300;
+                                            text-align: center;
+                                        }
+
+                                        .btn-group { display: flex; width: 100%; justify-content: space-between; margin-bottom: 50px; }
+
+                                        .btn-group a {
+                                            display: flex;
+                                            align-items: center;
+                                            color: white;
+                                            text-decoration: none;
+                                            padding: 5px 20px;
+                                            border-radius: 30px;
+                                            justify-content: center;
+                                            height: 35px;
+                                            width: 99%;
+                                            text-align: center;
+                                            font-size: 11px;
+                                        }
+
+                                        img { margin-right: 5px; width: 25px; height: 25px; }
+
+                                        .site { margin-top: 40px; text-align: center; }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class='title'>
+                                        <h1>Salut ". $user['first_name'] ." !👋</h1>
+                                    </div>
+                                    <div id='content'>
+                                        <div class='center'>
+                                            <span>Un nouveau commentaire vient d'être posté sur ton topic \"". $topic['title'] ."\"</span>
+                                            <h3>Tu peux y répondre cliquant juste ici 👇</h3>
+                                            <div class='btn-group'>
+                                                <a class='btn btn-primary' href='localhost:8888/forum/topic.php?topic=". $topic['id'] ."'>
+                                                    Répondre au commentaire
+                                                </a>
+                                            </div>
+                                            <!--<a style='color: black' class='site' href='localhost:8888/forum'</a>-->
+                                        </div>
+                                    </div>
+                                </body>
+                            </html>";
+        
+                    $mail = new PHPMailer;
+                    $mail->IsSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'mail.forumlatex@gmail.com';
+                    $mail->Password = 'Latex!780'; 
+                    $mail->SMTPSecure = 'ssl';
+                    $mail->Port = 465;
+                    $mail->setFrom('mail.forumlatex@gmail.com', 'FORUM LaTeX');
+                    $mail->AddAddress($user['mail']);
+                
+                    $mail->isHTML(true);
+                    $mail->Subject = '📝 Nouveau commentaire sur votre topic';
+                    $mail->Body = $client_message;
+                    $mail->CharSet = 'UTF-8';
+                    $mail->send();
+                    $mail->SmtpClose();
+                }
+
+                header('Location: topic.php?topic='. $id_topic);
+            }
         } else {
             echo 'Vous devez remplir la zone de commentaire !';
         }
