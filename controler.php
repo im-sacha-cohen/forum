@@ -267,7 +267,7 @@ $sql = new SQL();
                                 </head>
                                 <body>
                                     <h1 style='text-align: center;'>Salut ". $user['first_name'] ." !👋</h1>
-                                    <div id='content'>
+                                    <div id='content' style='text-align: center;'>
                                         <div class='center' style='padding 0 15px; text-align: center;'>
                                             <span style='text-align: center;'>Un nouveau commentaire vient d'être posté sur ton topic \"". $topic['title'] ."\"</span>
                                             <h3 style='text-align: center;'>Tu peux y répondre cliquant juste ici 👇</h3>
