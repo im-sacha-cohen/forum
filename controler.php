@@ -164,13 +164,13 @@ $sql = new SQL();
         if (is_numeric($_GET['topic']) && $_GET['topic'] >= 0 && $_GET['topic'] <= 9999) {
             $data_topic_by_id = $sql->getTopicById($_GET['topic']);
 
-            $data_user = $sql->getUserById($topic['id_user']);
-
-            foreach($data_user as $user_by_id) {
-                $user_by_id_username = $user_by_id['username'];
-            }
-
             foreach($data_topic_by_id as $topic_by_id) {
+
+                $data_user = $sql->getUserById($topic_by_id['id_user']);
+
+                foreach($data_user as $user_by_id) {
+                    $user_by_id_username = $user_by_id['username'];
+                }
 
                 if ($topic_by_id['src'] != null) {
                    $img = '<img src="'. $topic_by_id['src'] .'" alt="image">';
