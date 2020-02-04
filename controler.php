@@ -266,15 +266,13 @@ $sql = new SQL();
                                     </style>
                                 </head>
                                 <body>
-                                    <div class='title'>
-                                        <h1>Salut ". $user['first_name'] ." !👋</h1>
-                                    </div>
+                                    <h1 style='text-align: center;'>Salut ". $user['first_name'] ." !👋</h1>
                                     <div id='content'>
-                                        <div class='center'>
-                                            <span>Un nouveau commentaire vient d'être posté sur ton topic \"". $topic['title'] ."\"</span>
-                                            <h3>Tu peux y répondre cliquant juste ici 👇</h3>
-                                            <div class='btn-group'>
-                                                <a class='btn btn-primary' href='localhost:8888/forum/topic.php?topic=". $topic['id'] ."'>
+                                        <div class='center' style='padding 0 15px; text-align: center;'>
+                                            <span style='text-align: center;'>Un nouveau commentaire vient d'être posté sur ton topic \"". $topic['title'] ."\"</span>
+                                            <h3 style='text-align: center;'>Tu peux y répondre cliquant juste ici 👇</h3>
+                                            <div class='btn-group' style='text-align: center; height: 30px;'>
+                                                <a class='btn btn-primary' style='text-align: center; color: #fff; background-color: #007bff; border-color: #007bff; padding: .375rem .75rem; border-radius: 30px; width: 99%;' href='http://localhost:8888/forum/topic.php?topic=". $topic['id'] ."'>
                                                     Répondre au commentaire
                                                 </a>
                                             </div>
