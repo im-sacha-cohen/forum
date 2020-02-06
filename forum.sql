@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Feb 04, 2020 at 11:02 AM
+-- Generation Time: Feb 06, 2020 at 09:21 AM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.8
 
@@ -30,9 +30,10 @@ CREATE TABLE `comments` (
   `id` int(11) NOT NULL,
   `id_topic` int(11) NOT NULL,
   `posted_by` int(11) NOT NULL,
+  `src` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `posted` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `comment` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `comment` text COLLATE utf8mb4_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -43,11 +44,11 @@ CREATE TABLE `comments` (
 CREATE TABLE `topic` (
   `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `src` varchar(255) DEFAULT NULL,
-  `message` text NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `src` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message` text CHARACTER SET utf8mb4,
   `date_published` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
