@@ -11,7 +11,7 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,600&display=swap" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/js/all.min.js"></script>
         <link rel="stylesheet" href="assets/css/main.css">
-        <link rel="stylesheet" href="assets/js/app.js">
+        <script src="assets/js/app.js"></script>
     </head>
     <body>
         <?php include('assets/inc/header.php'); ?>
@@ -23,5 +23,6 @@
             </div>
             <?= $topics ?>
         </div>
+        <?php include('assets/inc/footer.php'); ?>
     </body>
 </html>

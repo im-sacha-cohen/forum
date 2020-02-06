@@ -113,6 +113,54 @@ textarea {
     max-width: 100%;
 }
 
+.topic-detail .card .card-body img .comment-picture {
+    width: 50%;
+}
+
 .topic-detail .hidden {
     display: none;
+}
+
+.emoji-bar {
+    height: 55px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.emoji {
+    transition: 300ms;
+    font-size: 27px;
+    /*padding: 0 5px;*/
+}
+
+.emoji:hover {
+    cursor: pointer;
+    font-size: 49px;
+}
+
+footer {
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    background: linear-gradient(to top, #007bff 100%, white);
+}
+
+footer a {
+    color: white;
+}
+
+footer .left, footer .right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+footer .right iframe {
+    max-width: 100%;
 }

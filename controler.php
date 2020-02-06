@@ -99,7 +99,7 @@ $sql = new SQL();
             if ($_FILES['topic_image']['size'] != 0) {
                 if ($_FILES['topic_image']['size'] != 0) {
                     $file_extension = pathinfo($_FILES['topic_image']['name']);
-                    $extensions = array('jpg', 'jpeg', 'png', 'gif');
+                    $extensions = array('jpg', 'jpeg', 'JPG', 'JPEG', 'PNG', 'GIF', 'png', 'gif');
                     $move = __DIR__.'/assets/img/' . basename($_FILES['topic_image']['name']);
                     $img_name = htmlspecialchars($_FILES['topic_image']['name']);
 
@@ -199,116 +199,152 @@ $sql = new SQL();
 //
 // AJOUTER UN COMMENTAIRE
     $id_topic = htmlspecialchars($_POST['id_topic']);
-    $comment = htmlspecialchars($_POST['comment']);
+    $comment = $_POST['comment'];
+    $send_mail = false;
 
     if (isset($_POST['submit_comment'])) {
         if (!empty($comment) && !empty($id_topic) && !empty($_SESSION['id'])) {
-            $sql->addComment($id_topic, $_SESSION['id'], $comment);
+            var_dump('picture -> '. $_FILES['picture_comment']);
+            if ($_FILES['picture_comment']['size'] != 0) {
+                if ($_FILES['picture_comment']['size'] != 0) {
+                    $file_extension = pathinfo($_FILES['picture_comment']['name']);
+                    $extensions = array('jpg', 'jpeg', 'JPG', 'JPEG', 'PNG', 'GIF', 'png', 'gif');
+                    $move = __DIR__.'/assets/img/' . basename($_FILES['picture_comment']['name']);
+                    $img_name = htmlspecialchars($_FILES['picture_comment']['name']);
 
-            $topics = $sql->getTopicById($id_topic);
-            foreach($topics as $topic) {
-                $users = $sql->getUserById($topic['id_user']);
-
-                foreach($users as $user) {
-                    $client_message = "<html>
-                                <head>
-                                <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
-                                    <style>
-                                        body
-                                        {
-                                            font-family: 'Montserrat',
-                                            font-size: 13px;
-                                            font-weight: 100;
-                                        }
-        
-                                        .title { display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 10px; }
-        
-                                        h1 {
-                                            font-weight: 500;
-                                            font-size: 20px;
-                                            text-align: center;
-                                            margin: 0;
-                                        }
-
-                                        h3 { font-weight: 500; margin-top: 50px; }
-        
-                                        .center { 
-                                            display: flex;
-                                            flex-direction: column;
-                                            padding: 10px;
-                                            width: 100%;
-                                            height: 40px;
-                                            align-items: center;
-                                            margin: 10px 0; 
-                                            font-weight: 300;
-                                            text-align: center;
-                                        }
-
-                                        .btn-group { display: flex; width: 100%; justify-content: space-between; margin-bottom: 50px; }
-
-                                        .btn-group a {
-                                            display: flex;
-                                            align-items: center;
-                                            color: white;
-                                            text-decoration: none;
-                                            padding: 5px 20px;
-                                            border-radius: 30px;
-                                            justify-content: center;
-                                            height: 35px;
-                                            width: 99%;
-                                            text-align: center;
-                                            font-size: 11px;
-                                        }
-
-                                        img { margin-right: 5px; width: 25px; height: 25px; }
-
-                                        .site { margin-top: 40px; text-align: center; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <h1 style='text-align: center;'>Salut ". $user['first_name'] ." !👋</h1>
-                                    <div id='content' style='text-align: center;'>
-                                        <div class='center' style='padding 0 15px; text-align: center;'>
-                                            <span style='text-align: center;'>Un nouveau commentaire vient d'être posté sur ton topic \"". $topic['title'] ."\"</span>
-                                            <h3 style='text-align: center;'>Tu peux y répondre cliquant juste ici 👇</h3>
-                                            <div class='btn-group' style='text-align: center; height: 30px;'>
-                                                <a class='btn btn-primary' style='text-align: center; color: #fff; background-color: #007bff; border-color: #007bff; padding: .375rem .75rem; border-radius: 30px; width: 99%;' href='http://localhost:8888/forum/topic.php?topic=". $topic['id'] ."'>
-                                                    Répondre au commentaire
-                                                </a>
-                                            </div>
-                                            <!--<a style='color: black' class='site' href='localhost:8888/forum'</a>-->
-                                        </div>
-                                    </div>
-                                </body>
-                            </html>";
-        
-                    $mail = new PHPMailer;
-                    $mail->IsSMTP();
-                    $mail->Host = 'smtp.gmail.com';
-                    $mail->SMTPAuth = true;
-                    $mail->Username = 'mail.forumlatex@gmail.com';
-                    $mail->Password = 'Latex!780'; 
-                    $mail->SMTPSecure = 'ssl';
-                    $mail->Port = 465;
-                    $mail->setFrom('mail.forumlatex@gmail.com', 'FORUM LaTeX');
-                    $mail->AddAddress($user['mail']);
-                
-                    $mail->isHTML(true);
-                    $mail->Subject = '📝 Nouveau commentaire sur votre topic';
-                    $mail->Body = $client_message;
-                    $mail->CharSet = 'UTF-8';
-                    $mail->send();
-                    $mail->SmtpClose();
+                    if (in_array($file_extension['extension'], $extensions)) {
+                        if (move_uploaded_file($_FILES['picture_comment']['tmp_name'], $move)) {
+                            $move = 'assets/img/'. basename($_FILES['picture_comment']['name']);
+                            //$sql->addTopic($_SESSION['id'], $topic_title, $move, $topic_message);
+                            $sql->addComment($id_topic, $_SESSION['id'], $move, $comment);
+                            //header('Location: topics.php');
+                            $send_mail = true;
+                        } else {
+                            echo 'Une erreur s\'est produite lors de l\'envoi du fichier' . $move;
+                        }
+                        
+                    } else {
+                        echo 'L\'extension du fichier n\'est pas autorisée';
+                    }
+                } else {
+                    echo 'Une erreur est survenue au chargement de l\'image';
                 }
+            } else {
+                $move = '';
+                $sql->addComment($id_topic, $_SESSION['id'], $move, $comment);
+                $send_mail = true;
+                //header('Location: topics.php');
+            }
+            //header('Location: topic.php?topic='. $id_topic);
 
-                header('Location: topic.php?topic='. $id_topic);
+            //
+            //$sql->addComment($id_topic, $_SESSION['id'], $comment);
+
+            if ($send_mail) {
+                $topics = $sql->getTopicById($id_topic);
+                foreach($topics as $topic) {
+                    $users = $sql->getUserById($topic['id_user']);
+    
+                    foreach($users as $user) {
+                        $client_message = "<html>
+                                    <head>
+                                    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
+                                        <style>
+                                            body
+                                            {
+                                                font-family: 'Montserrat',
+                                                font-size: 13px;
+                                                font-weight: 100;
+                                            }
+            
+                                            .title { display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 10px; }
+            
+                                            h1 {
+                                                font-weight: 500;
+                                                font-size: 20px;
+                                                text-align: center;
+                                                margin: 0;
+                                            }
+    
+                                            h3 { font-weight: 500; margin-top: 50px; }
+            
+                                            .center { 
+                                                display: flex;
+                                                flex-direction: column;
+                                                padding: 10px;
+                                                width: 100%;
+                                                height: 40px;
+                                                align-items: center;
+                                                margin: 10px 0; 
+                                                font-weight: 300;
+                                                text-align: center;
+                                            }
+    
+                                            .btn-group { display: flex; width: 100%; justify-content: space-between; margin-bottom: 50px; }
+    
+                                            .btn-group a {
+                                                display: flex;
+                                                align-items: center;
+                                                color: white;
+                                                text-decoration: none;
+                                                padding: 5px 20px;
+                                                border-radius: 30px;
+                                                justify-content: center;
+                                                height: 35px;
+                                                width: 99%;
+                                                text-align: center;
+                                                font-size: 11px;
+                                            }
+    
+                                            img { margin-right: 5px; width: 25px; height: 25px; }
+    
+                                            .site { margin-top: 40px; text-align: center; }
+                                        </style>
+                                    </head>
+                                    <body>
+                                        <h1 style='text-align: center;'>Salut ". $user['first_name'] ." !👋</h1>
+                                        <div id='content' style='text-align: center;'>
+                                            <div class='center' style='padding 0 15px; text-align: center;'>
+                                                <span style='text-align: center;'>Un nouveau commentaire vient d'être posté sur ton topic \"". $topic['title'] ."\"</span>
+                                                <h3 style='text-align: center;'>Tu peux y répondre cliquant juste ici 👇</h3>
+                                                <div class='btn-group' style='text-align: center; height: 30px;'>
+                                                    <a class='btn btn-primary' style='text-align: center; color: #fff; background-color: #007bff; border-color: #007bff; padding: .375rem .75rem; border-radius: 30px; width: 99%;' href='http://localhost:8888/forum/topic.php?topic=". $topic['id'] ."'>
+                                                        Répondre au commentaire
+                                                    </a>
+                                                </div>
+                                                <!--<a style='color: black' class='site' href='localhost:8888/forum'</a>-->
+                                            </div>
+                                        </div>
+                                    </body>
+                                </html>";
+            
+                        $mail = new PHPMailer;
+                        $mail->IsSMTP();
+                        $mail->Host = 'smtp.gmail.com';
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'mail.forumlatex@gmail.com';
+                        $mail->Password = 'Latex!780'; 
+                        $mail->SMTPSecure = 'ssl';
+                        $mail->Port = 465;
+                        $mail->setFrom('mail.forumlatex@gmail.com', 'FORUM LaTeX');
+                        $mail->AddAddress($user['mail']);
+                    
+                        $mail->isHTML(true);
+                        $mail->Subject = '📝 Nouveau commentaire sur votre topic';
+                        $mail->Body = $client_message;
+                        $mail->CharSet = 'UTF-8';
+                        $mail->send();
+                        $mail->SmtpClose();
+                    }
+                    header('Location: topic.php?topic='. $id_topic);
+                }
             }
         } else {
             echo 'Vous devez remplir la zone de commentaire !';
         }
     }
 //
-// RÉCUPÉRER TOUS LES COMMENTAIRES CORRESPONDANT AU TOPI
+// RÉCUPÉRER TOUS LES COMMENTAIRES CORRESPONDANT AU TOPIC
     if (isset($_GET['topic'])) {
         $comments = $sql->getComments($_GET['topic']);
 
@@ -323,11 +359,18 @@ $sql = new SQL();
             $date_published = date_create($data_comment['posted']);
             $date_published = date_format($date_published, 'd/m/Y à H:i');
 
+            if ($data_comment['src'] != null) {
+                $img = '<img class="comment-picture" src="'. $data_comment['src'] .'" alt="image">';
+            } else {
+                $img = '';
+            }
+
             $commentary .= '<div class="card border-light mb-3">
                             <div class="card-body">
                                 <h5 class="card-title">'. $username .', le '. $date_published .'</h5>
                                 <p class="card-text">
-                                    '. $data_comment['comment'] .'
+                                    '. $data_comment['comment'] .'<br/>
+                                    '. $img .'
                                 </p>
                             </div>
                         </div>';

@@ -11,7 +11,7 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:300,600&display=swap" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/js/all.min.js"></script>
         <link rel="stylesheet" href="assets/css/main.css">
-        <link rel="stylesheet" href="assets/js/app.js">
+        <script src="assets/js/app.js"></script>
     </head>
     <body>
         <?php include('assets/inc/header.php'); ?>
@@ -23,7 +23,8 @@
                     <form class="form form-topic" action="controler.php" method="post" enctype="multipart/form-data">
                         <input type="text" class="form-control input" name="topic_title" placeholder="Titre du topic" required autofocus>
                         <input type="file" class="form-control input" name="topic_image">
-                        <textarea class="form-control input" name="topic_message" placeholder="Votre message" required></textarea>
+                        <?php include('emoji-bar.php'); ?>
+                        <textarea class="form-control input text-zone" name="topic_message" placeholder="Votre message" required></textarea>
                         <input type="submit" class="btn btn-primary input" name="topic_submit" value="Poster">
                     </form>
                     <?php
@@ -37,5 +38,6 @@
                 }
             ?>
         </div>
+        <?php include('assets/inc/footer.php'); ?>
     </body>
 </html>

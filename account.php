@@ -54,5 +54,6 @@ include('controler.php');
                 }
             ?>
         </div>
+        <?php include('assets/inc/footer.php'); ?>
     </body>
 </html>

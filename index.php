@@ -19,5 +19,6 @@
             <!-- La ligne en dessous, c'est la même chose que: if ($_SESSION['connected']) {} else {} -->
             <?= $_SESSION['connected'] ? '<h1>Bonjour '. $_SESSION['first_name'] . ' !</h1>' : '<h1>Bienvenue</h1>' ?>
         </div>
+        <?php include('assets/inc/footer.php'); ?>
     </body>
 </html>

@@ -22,8 +22,11 @@
                 if ($_SESSION['connected']) {
                     ?>
                         <button class="btn btn-primary btn-leave-comment">Laisser un commentaire</button>
-                        <form class="form form-add-comment hidden" action="controler.php" method="post">
-                            <textarea name="comment" class="form-control" placeholder="Votre commentaire" required></textarea>
+                        <form class="form form-add-comment hidden" action="controler.php" method="post" enctype="multipart/form-data">
+                            <h3>Votre commentaire</h3>
+                            <input type="file" class="form-control" name="picture_comment">
+                            <?php include('emoji-bar.php'); ?>
+                            <textarea name="comment" class="form-control text-zone" placeholder="Votre commentaire" required></textarea>
                             <input type="hidden" name="id_topic" value="<?= $_GET['topic']; ?>">
                             <input type="submit" class="btn btn-success" name="submit_comment" value="Commenter">
                             <button class="btn btn-light btn-cancel">Annuler</button>
@@ -39,5 +42,6 @@
                 }
             ?>
         </div>
+        <?php include('assets/inc/footer.php'); ?>
     </body>
 </html>

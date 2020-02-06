@@ -4,7 +4,7 @@ class SQL {
     private function bdd() {
         try {
             //return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
-            return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8', 'root', 'root');
+            return new PDO('mysql:host=localhost;dbname=forum;port=8889;charset=utf8mb4', 'root', 'root');
         } catch (Exception $e) {
             echo 'Caught exception: ' . $e->getMessage();
         }
@@ -69,13 +69,14 @@ class SQL {
         return $fetch;
     }
 
-    public function addComment($id_topic, $posted_by, $comment) {
+    public function addComment($id_topic, $posted_by, $src, $comment) {
         $bdd = $this->bdd();
-
-        $insert = $bdd->prepare('INSERT INTO comments (id_topic, posted_by, comment) VALUES (:id_topic, :posted_by, :comment)');
+        
+        $insert = $bdd->prepare('INSERT INTO comments (id_topic, posted_by, src, comment) VALUES (:id_topic, :posted_by, :src, :comment)');
         $insert->execute(array(
             ':id_topic' => $id_topic,
             ':posted_by' => $posted_by,
+            ':src' => $src,
             ':comment' => $comment
         ));
     }
