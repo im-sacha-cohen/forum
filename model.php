@@ -1,6 +1,8 @@
 <?php
 
+// Nouvelle classe SQL
 class SQL {
+    // Fonction privée bdd qui retournera notre connexion à son appel
     private function bdd() {
         try {
             //return new PDO('mysql:host=localhost;dbname=forum;port=3306;charset=utf8', 'root', 'root');
@@ -11,10 +13,14 @@ class SQL {
     }
 
     public function addUser($admin, $first_name, $second_name, $username, $mail, $password) {
+        // On appelle la connexion à notre bdd
+        // $this fait référence à sa classe. En l'occurrence SQL.
+        // On appelle ensuite dans la class SQL, la fonction bdd()
         $bdd = $this->bdd();
 
-        // On prépare la requêtes pour éviter les injections SQL
+        // On prépare la requête pour éviter les injections SQL
         $insert = $bdd->prepare('INSERT INTO user (admin, first_name, second_name, username, mail, password) VALUES (:admin, :first_name, :second_name, :username, :mail, :password)');
+        // On execute notre requête grâce à un tableau associatif
         $insert->execute(array(
             ':admin' => $admin,
             ':first_name' => $first_name,
@@ -27,7 +33,7 @@ class SQL {
 
     public function getUserByMail($mail) {
         $bdd = $this->bdd();
-        
+        // On va chercher tous les utilisateurs où le mail ou le nom d'utilisateur correspond à ce qui a été renseigné par l'utilisateur
         $select = $bdd->query('SELECT * FROM user WHERE mail = "'. $mail . '" OR username = "'. $mail .'"');
         $fetch = $select->fetchAll();
         return $fetch;
